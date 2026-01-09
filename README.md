@@ -1,234 +1,120 @@
-/*------------------------------------------------------------
-* @Author             :   Reena Gupta
-* @Company            :   PwC
-* @Description        :   Test class for XDFieldUpdatePriority_BatchSchedule
-* @Last Modified Date :   08/05/2025
-* @Last Modified By   :   Reena Gupta
-------------------------------------------------------------*/
-@isTest
-public with sharing class XDFieldUpdatePriority_BatchSchedule_Test {
-    @isTest (seeAllData=true)
-
-    // Test method for update priority batch class execution
-    static void testBatchExecution() 
-    {
-  
-        // Create Admin user for RunAs purposes to create users and assign permission sets and setup data
-        Id adminProfileId = [select Id from Profile where Name = 'System Administrator'].Id;
-        User adminUser = new User(
-            ProfileId = adminProfileId,
-            FirstName = 'System',
-            LastName = 'Administrator',
-            UserName = System.now().getTime() + '@invalid.com',
-            Alias = 'sadmin',
-            Email = 'sysadmin@invalid.com',
-            EmailEncodingKey = 'UTF-8',
-            LanguageLocaleKey = 'en_US',
-            LocaleSidKey = 'nl_NL',
-            TimeZoneSidKey = UserInfo.getTimeZone().getID(),
-            UserPermissionsSupportUser = true
-        );  
-        insert adminUser; 
+/**
+ * This class contains unit tests for validating the behavior of Apex classes
+ * and triggers.
+ *
+ * Unit tests are class methods that verify whether a particular piece
+ * of code is working properly. Unit test methods take no arguments,
+ * commit no data to the database, and are flagged with the testMethod
+ * keyword in the method definition.
+ *
+ * All test methods in an org are executed whenever Apex code is deployed
+ * to a production org to confirm correctness, ensure code
+ * coverage, and prevent regressions. All Apex classes are
+ * required to have at least 75% code coverage in order to be deployed
+ * to a production org. In addition, all triggers must have some code coverage.
+ * 
+ * The @isTest class annotation indicates this class only contains test
+ * methods. Classes defined with the @isTest annotation do not count against
+ * the org size limit for all Apex scripts.
+ *
+ * See the Apex Language Reference for more information about Testing and Code Coverage.
+ */
+	@isTest
+	private class UnifiedCRMCaseTriggerTest {
+    @testSetup static void setup(){
         
-        PermissionSetGroup managerGroup = [select Id, Status from PermissionSetGroup where DeveloperName='FieldForce_Manager'];
-         // force calculation of the PSG if it is not already Updated
-        if (managerGroup.Status != 'Updated') {
-            Test.calculatePermissionSetGroup(managerGroup.Id);
-        }
+        Profile testProfile = [Select id from Profile where Name='Customer Service Users' LIMIT 1];
+        user testUser = new User(lastname='test',firstname='testfirstname', alias='tetst', username='test@fpl.com.xddev', email='test@fpl.com',profileid=testProfile.Id,
+                                 timezonesidkey='GMT', languageLocaleKey='en_US', EmailEncodingKey='UTF-8',LocaleSidKey='en_US');
         
-      // assign PSG to current user (this fails if PSG is Outdated)
-        insert new PermissionSetAssignment(PermissionSetGroupId = managerGroup.Id, AssigneeId = adminUser.Id);
+        INSERT testUser;
+        recordtype caseRecordType = [Select id, name from recordtype where name = :UnifiedCRM_GlobalConstants.caseRecordTypeName LIMIT 1];
+       
         
-      System.runas(adminUser)
-      {
- 
-        //Fetch record type of work type and work order
-        Id workTypeRecordTypeId = Schema.SObjectType.WorkType.getRecordTypeInfosByName().get('FieldForce').getRecordTypeId();
-        Id workOrderRecordTypeId = Schema.SObjectType.WorkOrder.getRecordTypeInfosByDeveloperName().get('Field_Meter_Operations').getRecordTypeId();
-        // Create WorkType with correct classification (used by formula field)
-        WorkType wt1 = new WorkType(
-            Name = 'Test WT1',
-            Work_Type_Classification__c = 'Collections',
-            EstimatedDuration = 30,
-            RecordTypeId=workTypeRecordTypeId,
-            Priority__c=1
-            
-        );
-        WorkType wt2 = new WorkType(
-            Name = 'Test WT2',
-            Work_Type_Classification__c = 'Revenue Protection',
-            EstimatedDuration = 60,
-            RecordTypeId=workTypeRecordTypeId,
-            Priority__c=20
-             
-        );
- 
-        insert wt1;
-        insert wt2;
- 
-        // Create WorkOrders with Work_Type_Classification__c = 'Collections'
-        List<WorkOrder> workOrders = new List<WorkOrder>();
- 
-        WorkOrder wo1 = new WorkOrder(
-            WorkTypeId = wt1.Id,
-            External_Priority_Ranking__c = 30000,
-            RecordTypeId=workOrderRecordTypeId,
-            Comment_Line__c ='Update Priority'
-        );
- 
-        WorkOrder wo2 = new WorkOrder(
-            WorkTypeId = wt1.Id,
-            External_Priority_Ranking__c = 2,
-            RecordTypeId=workOrderRecordTypeId,
-            Comment_Line__c ='Update Priority'
-        );
-        WorkOrder wo3 = new WorkOrder(
-            WorkTypeId = wt1.Id,
-            External_Priority_Ranking__c = 100000,
-            RecordTypeId=workOrderRecordTypeId,
-            Comment_Line__c ='Update Priority'
-        );
- 
-        WorkOrder wo4 = new WorkOrder(
-            WorkTypeId = wt1.Id,
-            External_Priority_Ranking__c = null,
-            RecordTypeId=workOrderRecordTypeId,
-            Comment_Line__c ='Update Priority'
-        );
- 
-        WorkOrder wo5 = new WorkOrder(
-            WorkTypeId = wt1.Id,
-            External_Priority_Ranking__c = 10000,
-            RecordTypeId=workOrderRecordTypeId,
-            Comment_Line__c ='Update Priority'
-        );
- 
-        WorkOrder wo6 = new WorkOrder(
-            WorkTypeId = wt1.Id,
-            External_Priority_Ranking__c = 0,
-            RecordTypeId=workOrderRecordTypeId,
-            Comment_Line__c ='Update Priority'
-        );
-		// Create WorkOrders with Work_Type_Classification__c = 'Revenue Protection'
-        WorkOrder wo7 = new WorkOrder(
-            WorkTypeId = wt2.Id,
-            External_Priority_Ranking__c =1,
-            RecordTypeId=workOrderRecordTypeId,
-            Comment_Line__c ='Update Priority'
-        );
-        WorkOrder wo8 = new WorkOrder(
-            WorkTypeId = wt2.Id,
-            External_Priority_Ranking__c =100000,
-            RecordTypeId=workOrderRecordTypeId,
-            Comment_Line__c ='Update Priority'
-        );
-        WorkOrder wo9 = new WorkOrder(
-            WorkTypeId = wt2.Id,
-            External_Priority_Ranking__c =1000000,
-            RecordTypeId=workOrderRecordTypeId,
-            Comment_Line__c ='Update Priority'
-        );
-        WorkOrder wo10 = new WorkOrder(
-            WorkTypeId = wt2.Id,
-            RecordTypeId=workOrderRecordTypeId,
-            Comment_Line__c ='Update Priority'
-        );
-        WorkOrder wo11 = new WorkOrder(
-            WorkTypeId = wt2.Id,
-            RecordTypeId=workOrderRecordTypeId,
-            Comment_Line__c ='Update Priority'
-        );
-        WorkOrder wo12 = new WorkOrder(
-            WorkTypeId = wt2.Id,
-            RecordTypeId=workOrderRecordTypeId,
-            Comment_Line__c ='Update Priority'
-        );
-        workOrders.add(wo1);
-        workOrders.add(wo2);
-        workOrders.add(wo3);
-        workOrders.add(wo4);
-        workOrders.add(wo5);
-        workOrders.add(wo6);
-        workOrders.add(wo7);
-        workOrders.add(wo8);
-        workOrders.add(wo9);
-        workOrders.add(wo10);
-        workOrders.add(wo11);
-        insert workOrders;
-        Test.startTest();
+	Case newcase = new Case(Sub_Category__c= 'Light Removal', Origin='User',Category__c='Move Out', type='Unified CRM Case', recordtypeid = caseRecordType.id );
+     INSERT newcase;
+	}
         
-        XDFieldUpdatePriority_BatchSchedule  batch = new XDFieldUpdatePriority_BatchSchedule ();
-        ID batchId = Database.executeBatch(batch, 200);
- 
-        insert wo12;
-        String cron = '0 0 0 1 1 ? 2099'; 
-        System.schedule('XDFieldUpdatePriority_BatchSchedule_SchedulableTest', 
-                        cron, 
-                        new XDFieldUpdatePriority_BatchSchedule());
-        
-        Test.stopTest();
- 
-        // Validate all the WorkOrders are updated with correct Dynamic_Priority__c
-        List<WorkOrder> updatedWOs = [
-            SELECT Id, Dynamic_Priority__c FROM WorkOrder
-            WHERE Id in :workOrders and Dynamic_Priority__c != null
-        ];
-        System.assertEquals(workOrders.size(), updatedWOs.size(), '11 work orders should be processed.');
-        // Assert ServiceAppointments updated
-        List<ServiceAppointment> updatedSAs = [
-            SELECT Id, FSSK__FSK_Work_Order__c, Dynamic_Priority__c FROM ServiceAppointment WHERE FSSK__FSK_Work_Order__c IN :updatedWOs
-        ];
-        System.assertEquals(updatedWOs.size(), updatedSAs.size(), 'All related ServiceAppointments should be updated');
-        
-        // Assert the WO was processed by the schedulable path 
-        WorkOrder wo = [SELECT Dynamic_Priority__c FROM WorkOrder WHERE Id = :wo12.Id]; 
-        System.assertNotEquals(null, wo.Dynamic_Priority__c, 
-                             'WO priority should be set via schedulable execute'); 
-      }
-        
-    }
-    
-    // Test method for calculation matrix
     @isTest
-    static void testCalculationMatrix(){
-      
-        // Create Admin user for RunAs purposes to create users and assign permission sets and setup data
-        Id adminProfileId = [select Id from Profile where Name = 'System Administrator'].Id;
-        User adminUser = new User(
-            ProfileId = adminProfileId,
-            FirstName = 'System',
-            LastName = 'Administrator',
-            UserName = System.now().getTime() + '@invalid.com',
-            Alias = 'sadmin',
-            Email = 'sysadmin@invalid.com',
-            EmailEncodingKey = 'UTF-8',
-            LanguageLocaleKey = 'en_US',
-            LocaleSidKey = 'nl_NL',
-            TimeZoneSidKey = UserInfo.getTimeZone().getID(),
-            UserPermissionsSupportUser = true
-        );  
-        insert adminUser; 
-        
-        PermissionSetGroup managerGroup = [select Id, Status from PermissionSetGroup where DeveloperName='FieldForce_Manager'];
-         // force calculation of the PSG if it is not already Updated
-        if (managerGroup.Status != 'Updated') {
-            Test.calculatePermissionSetGroup(managerGroup.Id);
-        }
-        
-      // assign PSG to current user (this fails if PSG is Outdated)
-        insert new PermissionSetAssignment(PermissionSetGroupId = managerGroup.Id, AssigneeId = adminUser.Id);
-        
-      System.runas(adminUser)
-      {
+    static void insertCasesTest() {
+        Case myCase = new Case(Sub_Category__c= 'Light Removal', Origin='User',Category__c='Move Out', type='Unified CRM Case');        
         Test.startTest();
-        XDFieldUpdatePriority_BatchSchedule  batch = new XDFieldUpdatePriority_BatchSchedule ();
-        ID batchId = Database.executeBatch(batch, 200);
-        String cron = '0 0 0 1 1 ? 2099'; 
-        System.schedule('XDFieldUpdatePriority_BatchSchedule_SchedulableTest', 
-                        cron, 
-                        new XDFieldUpdatePriority_BatchSchedule());
-        
+        INSERT myCase;
         Test.stopTest();
+        Case newCase = [SELECT ID,Sub_Category__c FROM Case Where Id=:myCase.Id];
+        System.assertEquals('Light Removal',myCase.Sub_Category__c);
     }
+        
+     @isTest
+    static void updateCasesTest() {
+        Case myCase = new Case(Sub_Category__c= 'Light Removal', Origin='User',Category__c='Move Out', type='Unified CRM Case');
+        INSERT myCase;
+        UnifiedCRMCaseHandler.runOnce=false;
+        myCase.Sub_Category__c ='FPL.com / Mobile App Issue';
+        Test.startTest();
+        UPDATE myCase;
+        Test.stopTest();
+        Case newCase = [SELECT ID,Sub_Category__c FROM Case Where Id=:myCase.Id];
+        System.assertEquals('FPL.com / Mobile App Issue',myCase.Sub_Category__c);
+        
     }
+        
+    @isTest
+    static void afterUpdateCasesTest() { 
+       case myCase=  [SELECT ID,Sub_Category__c FROM Case Where Sub_Category__c='Light Removal' limit 1];
+        myCase.Sub_Category__c ='FPL.com / Mobile App Issue';
+         UnifiedCRMCaseHandler.runOnce=false;
+        Test.startTest();
+        UPDATE myCase;
+        Test.stopTest();
+        Case newCase = [SELECT ID,Sub_Category__c FROM Case Where Id=:myCase.Id];
+        System.assertEquals('FPL.com / Mobile App Issue',myCase.Sub_Category__c);
+    }  
+        
+     //test exception
+     @isTest
+     static void updateCasesTestErrorHandling() {
+         
+         user testUser = [select id from user where username='test@fpl.com.xddev' LIMIT 1];
+         
+         Case myCase = new Case(Sub_Category__c= 'Light Removal', Origin='User', type='Unified CRM Case');
+         INSERT myCase;
+                 
+         system.runAs(testUser){
+             UnifiedCRMCaseHandler.runOnce=false;
+             myCase.Sub_Category__c ='test';
+             myCase.Priority ='Critical';
+             myCase.ownerid =testUser.id;
+             Test.startTest();
+             try{
+                 UPDATE myCase;
+             }catch(DMLException ex){
+                 system.Debug('INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY   '+ex.getMessage());
+             }
+             
+             Test.stopTest();
+         }
+        
+         Case newCase = [SELECT ID,Sub_Category__c FROM Case Where Id=:myCase.Id];
+         System.assertEquals('test',myCase.Sub_Category__c);
+     }
+        
+        @isTest
+        static void UpdateStatusTest() {
+           case myCase=  [SELECT ID,Sub_Category__c FROM Case Where Sub_Category__c='Light Removal' limit 1];
+           Profile testProfile = [Select id from Profile where Name='Customer Service Users' LIMIT 1];
+           user newUser = new User(lastname='test',firstname='testfirstname', alias='tetst', username='test1@fpl.com.xddev', email='test@fpl.com',profileid=testProfile.Id,
+                                 timezonesidkey='GMT', languageLocaleKey='en_US', EmailEncodingKey='UTF-8',LocaleSidKey='en_US');
+            insert newUser;
+            myCase.Sub_category__c='Billing Programs - Fixed Rate';
+            myCase.Category__c='Programs';
+            myCase.ownerid =newUser.id;
+            Test.startTest();
+            UPDATE myCase;
+            Test.stopTest();
+            case updatedCase=  [SELECT ID,Sub_Category__c,status FROM Case Where Sub_Category__c='Billing Programs - Fixed Rate' limit 1];
+            System.assertEquals('New',updatedCase.Status);
+
+          }
+        
 }
