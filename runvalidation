@@ -1,0 +1,31 @@
+[2026-01-11T20:56:35.519460Z] Running validation via Windows PowerShell script
+
+Run ID: 3f4e438c-0b11-4e77-b707-a8886381a266
+Pull request: 21166
+Script: D:\prism\powershell\runvalidation.ps1
+Repo path: D:\Users\RXN00DA\Review History\prism\Cloned
+Source: feature/xdcrm-field_SFFIELD-3806-Helper_Ticket
+Target: XDCRMTEST
+
+### Checkout XDCRMTEST
+$ git checkout XDCRMTEST
+
+### Clean working directory (best-effort after failure)
+$ git clean -d -f -e dashboard/runtime_artifacts/**
+
+Removing __pycache__
+Removing dashboard/__pycache__
+
+ERROR:
+D:\prism\powershell\runvalidation.ps1 : fatal: 'origin' does not appear to be a git repository
+
+At D:\prism\powershell\runvalidation.ps1:164 char:3
++ Write-Error $_.Exception.Message
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException, runvalidation.ps1
+
+[2026-01-11T20:58:20.426012Z] Script completed (exit 1, 104.91s)
+
+Validation errored out. Check the console for details.
