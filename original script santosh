@@ -1,0 +1,100 @@
+Original script
+
+Bash script for SF validation-
+
+#!/bin/bash
+
+ 
+
+# Read three values from file (one per line)
+
+#VALUE1=$(sed -n '1p' values.txt)
+
+#VALUE2=$(sed -n '2p' values.txt)
+
+#VALUE3=$(sed -n '3p' values.txt)
+
+ 
+
+#echo "Value 1: $VALUE1"
+
+#echo "Value 2: $VALUE2"
+
+#echo "Value 3: $VALUE3"
+
+ 
+
+# Define variables
+
+FEATURE_BRANCH="feature/xdcrm-agent_SFAD-9068_empty-rows-added-defect"
+
+TARGET_BRANCH="xdtestr3"
+
+ORG_ALIAS="XDTESTR4"
+
+ 
+
+#Checkout Target branch and pull
+echo “checking out target branch:”
+git checkout “$TARGET_BRANCH”
+
+echo “pull latest changes from remote for the target branch:”
+
+git pull
+
+ 
+
+# Checkout feature branch
+
+echo "checking out feature branch:"
+
+git checkout "$FEATURE_BRANCH" > git_checkout.txt
+
+ 
+
+# Pull latest changes
+
+echo "pulling latest changes from repo:"
+
+git pull
+
+ 
+
+# Merge target branch
+
+echo "Merging destination branch into feature branch:"
+
+git merge "origin/$TARGET_BRANCH" > git_merge.txt
+
+ 
+
+# Push changes
+
+echo "Push changes to repo after merge:"
+
+git push
+
+ 
+
+# Generate deltas using sfdx
+
+echo "Generating delta for the validation:"
+
+sfdx mdt:git:delta -f "origin/$TARGET_BRANCH" -t "origin/$FEATURE_BRANCH" -p deltas -d deleted_deltas
+
+ 
+
+# Deploy with dry-run
+
+echo "Starting the validation:"
+
+sf project deploy start --dry-run -d ./deltas --target-org "$ORG_ALIAS" --api-version 65.0 --wait 120 > validation.txt
+
+ 
+
+#clean working directory
+
+echo “cleaning working directory:”
+
+git clean -d -f
+
