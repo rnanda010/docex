@@ -1,0 +1,13 @@
+Issue Type,Issue key,Issue id,Summary,Assignee,Reporter,Priority,Status,Resolution,Created,Updated,Due Date,Resolved,Custom field (Closed Date)
+Bug,SFFIELD-3920,5039554,[Hypercare] unable to dispatch in bulk even when accounts have ids,AXU0PI7,AXC0LYZ,Major,Ready for Pull Request,,21/Jan/26 1:55 PM,25/Jan/26 7:54 PM,23/Jan/26 12:00 AM,,
+Bug,SFFIELD-3915,5037004,[Hypercare] Error when going to Pause state while en-route (Scheduled Start & End),AXU0PI7,AXC0LYZ,Major,Ready for Pull Request,,21/Jan/26 11:35 AM,25/Jan/26 7:50 PM,23/Jan/26 12:00 AM,,
+Bug,SFFIELD-3905,5030928, [Business Validations] Premise Number is not passed from Salesforce side for Case subtypes CIC Referred,MXP0BD7,MXS0VOE,Major,Ready for Pull Request,,19/Jan/26 12:23 PM,24/Jan/26 6:23 PM,22/Jan/26 12:00 AM,,
+Story,SFFIELD-3893,5034708,[Hypercare] Ability to Edit Service Territory on WO,AXU0PI7,AXU0PI7,Major,Ready for Pull Request,,20/Jan/26 6:31 PM,24/Jan/26 1:48 PM,22/Jan/26 12:00 AM,,
+Bug,SFFIELD-3891,5034704,[Hypercare] Multiple lunch break entries are created on the timesheet,AXU0PI7,MXP0BD7,Minor,Ready for Pull Request,,20/Jan/26 6:14 PM,25/Jan/26 7:29 PM,23/Jan/26 12:00 AM,,
+Story,SFFIELD-3882,5029802,[Business Validation] Default to Standard Meter Type Work Type when No MNS Match,AXU0PI7,GXC01NR,Minor,Ready for Pull Request,,18/Jan/26 6:07 PM,24/Jan/26 1:45 PM,22/Jan/26 12:00 AM,,
+Bug,SFFIELD-3849,5010813,[FAST FOLLOW] [UC-TC-9100] Revenue Protection CGI letters not posting in SAP (E905),AXU0PI7,AXU0PI7,Major,Ready for Pull Request,,09/Jan/26 12:00 AM,24/Jan/26 6:24 PM,22/Jan/26 12:00 AM,,
+Bug,SFFIELD-3845,5008789,[FAST FOLLOW] When scanning a meter it's showing up as an Elster when it should be Aclara,MXP0BD7,MXP0BD7,Minor,Ready for Pull Request,,08/Jan/26 2:53 PM,24/Jan/26 6:25 PM,22/Jan/26 12:00 AM,,
+Bug,SFFIELD-3834,4996239,[FAST FOLLOW] [UC-TC-9101] - RRG case not created for 2nd CGI on Meter Maintenance Order,MXP0BD7,AXU0PI7,Minor,Ready for Pull Request,,05/Jan/26 4:55 PM,24/Jan/26 6:26 PM,22/Jan/26 12:00 AM,,
+Bug,SFFIELD-3831,4994352, [FAST FOLLOW] [NO ASSOCIATED TC] No entry items for overtime are calculated on timesheet for callout (second) shift ,RXS0UWS,LXZ04UR,Minor,Ready for Pull Request,,05/Jan/26 10:26 AM,24/Jan/26 6:27 PM,22/Jan/26 12:00 AM,,
+Bug,SFFIELD-3816,4979229,[FAST FOLLOW] [No associated test case] - Meter Tech A (MEA) User can access Work Routing Screen on Salesforce Desktop,AXU0PI7,AXU0PI7,Major,Ready for Pull Request,,23/Dec/25 11:49 AM,25/Jan/26 9:49 PM,23/Jan/26 12:00 AM,,
+Bug,SFFIELD-3806,4970948,[FAST FOLLOW] UC-TC-9023 When creating a helper ticket and trying to assign I get an error message,MXP0BD7,MXP0BD7,Minor,Ready for Pull Request,,18/Dec/25 11:47 PM,23/Jan/26 8:13 PM,22/Jan/26 12:00 AM,,
