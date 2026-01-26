@@ -1,0 +1,140 @@
+/**********************************************************
+Apex Class Name     :   XDFieldHelperTicket_Controller_Test
+@description        :   Test class for XDFieldHelperTicket_Controller.
+                        Validates the cloning and dependency creation functionality of ServiceAppointment records.
+                        Includes test setup for Account, WorkOrder, and ServiceAppointment.
+                        Ensures cloned records are correctly created and distinct.
+@Last Modified Date :   01/09/2026
+@Last Modified By   :   Shreksta Ramesh(SFFIELD-3806)
+Modification Log:
+Ver   Date         Author                               Modification
+1.0   08/06/2025   Uday Arora                           Initial Version
+2.0   01/09/2026   Shreksta Ramesh                      Added test methods to validate Dependency Creation between Service Appointments
+**********************************************************/
+@isTest
+private class XDFieldHelperTicket_Controller_Test {
+    
+    @TestSetup
+    static void setupTestData() {
+        Account testAccount = new Account(Name = 'Test Account');
+        insert testAccount;
+
+        WorkOrder workOrder = new WorkOrder(
+            AccountId = testAccount.Id, 
+            Status = 'New',
+            StartDate = System.now().addDays(1),
+            EndDate = System.now().addDays(90),
+            Duration = 1.00
+        );
+        insert workOrder;
+
+        ServiceAppointment testSA = new ServiceAppointment(
+            Status = 'Pending',
+            ParentRecordId = workOrder.Id,
+            Contact_Phone__c = '(630) 674-2620',
+            ServiceTerritoryId = null,
+            EarliestStartTime = System.now(),
+            DueDate = System.today().addDays(1),
+            DurationType = 'Hours'
+        );
+        insert testSA;
+    }
+    
+    @isTest
+    static void testCloneServiceAppointment() {
+        ServiceAppointment originalSA = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        System.debug('Original SA ID: ' + originalSA.Id);
+        Test.startTest();
+        ServiceAppointment clonedSA = XDFieldHelperTicket_Controller.cloneServiceAppointment(originalSA.Id);
+        Test.stopTest();       
+        System.debug('Cloned SA ID: ' + clonedSA.Id);      
+        System.assertNotEquals(null, clonedSA, 'Cloned Service Appointment should not be null');
+        System.assertNotEquals(originalSA.Id, clonedSA.Id, 'Cloned Service Appointment ID should be different from the original');
+    }
+    
+    @isTest
+    static void testCloneServiceAppointment_NoCreatePermission() {
+        ServiceAppointment originalSA = [SELECT Id FROM ServiceAppointment LIMIT 1];       
+        Profile restrictedProfile = [SELECT Id FROM Profile WHERE Name = 'Read Only' LIMIT 1];
+        User restrictedUser = new User(
+            Alias = 'testuser',
+            Email = 'testuserrr122121@nexteraenergy.com',
+            EmailEncodingKey = 'UTF-8',
+            LastName = 'Test',
+            LanguageLocaleKey = 'en_US',
+            LocaleSidKey = 'en_US',
+            ProfileId = restrictedProfile.Id,
+            TimeZoneSidKey = 'America/New_York',
+            UserName = 'testuserrrr123221@example.com'
+        );
+        insert restrictedUser;
+        
+        System.runAs(restrictedUser) {
+            Test.startTest();
+            try {
+                XDFieldHelperTicket_Controller.cloneServiceAppointment(originalSA.Id);
+                System.assert(false, 'Expected an exception to be thrown');
+            } catch (Exception e) {
+                // Catch either SecurityException or QueryException
+                System.assert(
+                    e instanceof System.SecurityException || 
+                    e instanceof System.QueryException,
+                    'Expected SecurityException or QueryException'
+                );
+            }
+            Test.stopTest();
+        }
+    }
+    
+    @isTest
+    static void testCreateTimeDependency() {
+        ServiceAppointment originalSA = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        
+        Test.startTest();
+        ServiceAppointment clonedSA = XDFieldHelperTicket_Controller.cloneServiceAppointment(originalSA.Id);
+        
+        XDFieldHelperTicket_Controller.DependencyResult result = 
+            XDFieldHelperTicket_Controller.createTimeDependency(originalSA.Id, clonedSA.Id);
+        Test.stopTest();
+        
+        System.assertNotEquals(null, result, 'DependencyResult should not be null');
+        System.assertNotEquals(null, result.parentSANumber, 'Parent SA Number should not be null');
+        System.assertNotEquals(null, result.childSANumber, 'Child SA Number should not be null');
+        System.assertEquals('Same Start', result.dependencyType, 'Dependency type should be Same Start');
+    }
+    
+    @isTest
+    static void testCreateTimeDependency_NoCreatePermission() {
+        ServiceAppointment originalSA = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment clonedSA = XDFieldHelperTicket_Controller.cloneServiceAppointment(originalSA.Id);      
+        Profile restrictedProfile = [SELECT Id FROM Profile WHERE Name = 'Read Only' LIMIT 1];
+        User restrictedUser = new User(
+            Alias = 'testdep',
+            Email = 'testuser_dep@nexteraenergy.com',
+            EmailEncodingKey = 'UTF-8',
+            LastName = 'Test Dependency User',
+            LanguageLocaleKey = 'en_US',
+            LocaleSidKey = 'en_US',
+            ProfileId = restrictedProfile.Id,
+            TimeZoneSidKey = 'America/New_York',
+            UserName = 'testuser_dep@nexteratest.com'
+        );
+        insert restrictedUser;
+        System.runAs(restrictedUser) {
+            Test.startTest();
+            try {
+                XDFieldHelperTicket_Controller.createTimeDependency(originalSA.Id, clonedSA.Id);
+                System.assert(false, 'Expected an exception to be thrown');
+            } catch (Exception e) {
+                // Catch either SecurityException or QueryException
+                System.assert(
+                    e instanceof System.SecurityException || 
+                    e instanceof System.QueryException,
+                    'Expected SecurityException or QueryException'
+                );
+            }
+            Test.stopTest();
+        }
+    }
+    
+}
