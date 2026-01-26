@@ -1,0 +1,1 @@
+project in ("Salesforce XD Employee Desktop", "Salesforce XD Case Management", "Salesforce Customer Service Field Services") and status = "Ready for Pull Request" and fixVersion = Release.2026.01.28
