@@ -1,0 +1,121 @@
+Final Decision
+✅ Option 2 is the plan
+
+Trial SB refresh starts Feb 28
+
+Trial SB connects to EQ1
+
+EQ2 is NOT used for the core 3.1 / 3.2 testing path right now
+
+Converted data stays in EQ2, but EQ2 is treated as optional/secondary, not the primary execution path
+
+Leadership preference voiced: Option 2 (Jamie explicitly preferred it) because it protects 3.1 UAT window.
+
+Why EQ2 Was Rejected (for now)
+
+EQ2 refresh for conversion is expected around April (week of Apr 6–13) and must happen before UAT, not mid-cycle.
+
+Switching primary testing to EQ2 introduces additional operational risk and schedule risk (rewires, hiccups, timing dependencies).
+
+Team consensus: don’t complicate, stick with what’s proven (EQ1 refresh from PROD).
+
+What Gets Refreshed and When
+A) 3.1 UAT protection
+
+3.1 UAT runs through Feb 27
+
+No refresh activity that disrupts EQ1 should happen before UAT completes.
+
+B) SAP refresh (EQ1)
+
+Start night of Feb 27 / early Feb 28
+
+Take PROD snapshot (do not add converted data)
+
+BASIS refresh into EQ1
+
+Expected SAP refresh duration: ~2 days
+
+C) Post-refresh data movement (SAP → Salesforce via MuleSoft)
+
+Once SAP EQ1 refresh is ready:
+
+SAP provides files
+
+MuleSoft loads into Salesforce
+
+Mule load duration: ~2–3 days
+
+Net downtime/impact window described: ~3 days (mostly Mar 2–4)
+
+Target “ready for resumed testing” date: March 5
+
+Salesforce Trial SB Plan
+
+Trial SB is refreshed starting Feb 28 (24 hours to clean copy of production).
+
+Salesforce teams can prep PRs in parallel (no SAP dependency for preparing PRs/reviews).
+
+Hard dependency: actual data sync/load must wait until:
+
+Fields & Permissions PR (3.1) is deployed AND
+
+SAP refresh provides files
+
+Key Dependency Rules (as agreed)
+✅ Hard dependencies
+
+MuleSoft load depends on Salesforce Fields & Permissions PR (3.1) being deployed.
+
+Data sync/load depends on SAP refresh files.
+
+✅ Non-dependencies / parallel work allowed
+
+PR review cycles, build readiness, deployment prep can proceed without SAP.
+
+Many 3.2 SIT activities can continue where not blocked by refreshed SAP data.
+
+Impacts Called Out
+1) 3.2 SIT impact
+
+You will lose ~3 days due to the SAP refresh + load cycle.
+
+SIT1 already slipped (was supposed to start Feb 9 / earlier referenced), so this makes acceleration necessary.
+
+2) Business tester impact
+
+Business teams lose minimal “active testing time” if refresh happens over weekend,
+but in-progress test scenarios and data will reset → needs a clear cutoff and comms.
+
+Risk Decisions / Risk Mitigation
+Risks accepted with Option 2
+
+Short-term testing disruption (~3 days)
+
+Additional delay pressure on 3.2 SIT
+
+Mitigations explicitly requested
+
+Comms plan (John coordinating with Susie / Monica)
+
+Test acceleration + defect remediation acceleration plan for 3.2
+
+Rohit to provide a clean project-plan-style timeline with dates + risks
+
+EQ2 “Secondary Path” Outcome
+
+Even though EQ2 is not the primary path:
+
+Team wants MuleSoft capability to connect to BOTH EQ1 and EQ2 if feasible
+
+EQ1 = refreshed PROD-like data for core testing/execution
+
+EQ2 = converted data (useful later / ORT / IR4 discussions)
+
+But reiteration: No change to current decision (still EQ1 primary).
+
+Final One-Liner Summary
+
+Option 2 wins: Protect 3.1 UAT through Feb 27, refresh EQ1 from PROD starting Feb 28, run MuleSoft reload Mar 2–4, and resume testing around Mar 5—while keeping EQ2 as a secondary converted-data environment and (ideally) maintaining connectivity to both.
+
+If you want, paste this into a leadership email, and I’ll rewrite it into a crisp “Decision + Why + Dates + Actions/Owners” format.
