@@ -13,5 +13,5 @@ DIST_HOTFIX=$(git rev-list --count $MB_HOTFIX..$HOTFIX)
 if [ $DIST_MASTER -lt $DIST_HOTFIX ]; then
   echo "Branch was created from: master"
 else
-  echo "Branch was created from: hotfix/Hypercare_xt"
+  echo "Branch was created from: hotfix/Hypercare_XD"
 fi
