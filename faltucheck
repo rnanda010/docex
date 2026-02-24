@@ -1,7 +1,6 @@
 TARGET=rc/justcheck
 MASTER=origin/master
-HOTFIX=origin/
-hotfix/HyperCare_XD
+HOTFIX=origin/hotfix/HyperCare_XD
 
 
 MB_MASTER=$(git merge-base $TARGET $MASTER)
