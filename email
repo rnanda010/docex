@@ -1,0 +1,22 @@
+Hi
+
+I want to align on the current state of the deployment pipeline.
+
+The deployment pipeline that Pratap and Mark have been working on has not yet become operational in the current EC2 environment.
+
+Pratap has now indicated that the issue is environment-related and that a Unix-based server is required instead of the current setup.
+
+At this point, the pipeline is not functional, and we need a clear decision on infrastructure so we can proceed.
+
+**Request:**
+
+1. Can we confirm whether a Unix-based server will be provisioned?
+2. Who will own provisioning and setup?
+3. What timeline should we align to so we can move forward?
+
+Our custom deployment automation has already demonstrated strong efficiency and quality improvements, but without a working deployment pipeline environment, we cannot operationalize it fully.
+
+We would appreciate your guidance on the infrastructure decision so we can unblock progress.
+
+Thanks,
+Ritesh
