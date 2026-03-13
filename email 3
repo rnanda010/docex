@@ -1,0 +1,14 @@
+Hi Mark,
+
+Lisa called out in her review today that the flow deactivation and reactivation required for tomorrow’s data load will need a change request.
+
+A Jira ticket was already created for the operational steps (https://jira.nexteraenergy.com/browse/FPLSFDO-1699), but a formal service/change ticket is needed so the activity can be tracked and linked to the parent change request (CHG0661817).
+
+Could you please assist with raising the service ticket and linking it to the umbrella change request?
+
+Also tagging @Pell, Lisa — Joe mentioned you had suggested adding a few additional steps. Could you please outline those here so they can be incorporated into the change ticket?
+
+Appreciate everyone’s help in getting this aligned.
+
+Thanks,
+Ritesh
