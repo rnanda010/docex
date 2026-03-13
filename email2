@@ -1,0 +1,13 @@
+Request for Service Ticket Creation – Flow Deactivation/Reactivation for XD Integrated Release 3.1
+Hi Mark,
+
+Joe and I recently became aware that a service ticket is required for the flow deactivation and reactivation activity associated with **XD Integrated Release 3.1**. A JIRA incident has already been logged for the operational steps; however, it appears a **service ticket/incident number is also needed** so this activity can be properly tracked and tied to the umbrella change request.
+Since this requirement surfaced fairly late in the process, I’m helping coordinate from the DevOps side to ensure the necessary tracking is in place.
+
+Could the **FPL DevOps team please assist with raising the service ticket and linking it to the umbrella change request**? The change request number will be added to the thread once it is confirmed.
+Also tagging **Lisa** — Joe mentioned that you had suggested adding a few additional steps. As your status appears to be set to *Do Not Disturb*, we weren’t able to reach you directly. When you have a moment, could you please outline those steps here so they can be incorporated into the change ticket?
+
+Appreciate everyone’s help in getting this aligned quickly.
+
+Thanks,
+Ritesh
