@@ -1,0 +1,3 @@
+$env:PRISM_JIRA_BASE_URL="https://jira.nextteraenergy.com"
+$env:PRISM_JIRA_USER="RXN00DA"
+$env:PRISM_JIRA_PASSWORD="your_actual_password_here"
