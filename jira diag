@@ -1,0 +1,206 @@
+#!/usr/bin/env python3
+import os
+import sys
+import json
+import base64
+import requests
+
+TIMEOUT = 20
+
+
+def mask(value: str | None, keep: int = 4) -> str:
+    if not value:
+        return "<missing>"
+    if len(value) <= keep:
+        return "*" * len(value)
+    return value[:keep] + "*" * (len(value) - keep)
+
+
+def print_section(title: str) -> None:
+    print("\n" + "=" * 80)
+    print(title)
+    print("=" * 80)
+
+
+def normalize_base_url(url: str) -> str:
+    return url.strip().rstrip("/")
+
+
+def try_get(url: str, headers=None, auth=None, verify=True):
+    try:
+        r = requests.get(url, headers=headers, auth=auth, timeout=TIMEOUT, verify=verify)
+        return r
+    except requests.exceptions.SSLError as e:
+        print(f"SSL ERROR: {e}")
+        return None
+    except requests.exceptions.ConnectionError as e:
+        print(f"CONNECTION ERROR: {e}")
+        return None
+    except requests.exceptions.Timeout as e:
+        print(f"TIMEOUT ERROR: {e}")
+        return None
+    except Exception as e:
+        print(f"UNEXPECTED ERROR: {e}")
+        return None
+
+
+def basic_auth_header(username: str, password: str) -> dict:
+    raw = f"{username}:{password}".encode("utf-8")
+    encoded = base64.b64encode(raw).decode("ascii")
+    return {
+        "Authorization": f"Basic {encoded}",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+    }
+
+
+def summarize_response(label: str, r: requests.Response | None) -> None:
+    print(f"\n[{label}]")
+    if r is None:
+        print("No response received.")
+        return
+
+    print(f"URL: {r.url}")
+    print(f"HTTP {r.status_code}")
+    ct = r.headers.get("Content-Type", "")
+    print(f"Content-Type: {ct}")
+
+    body = r.text[:800].replace("\n", " ")
+    print(f"Body preview: {body}")
+
+
+def main():
+    base_url = os.getenv("PRISM_JIRA_BASE_URL", "").strip()
+    username = os.getenv("PRISM_JIRA_USER", "").strip()
+    token = os.getenv("PRISM_JIRA_TOKEN", "").strip()
+
+    # Optional env vars
+    issue_key = os.getenv("PRISM_JIRA_ISSUE_KEY", "").strip()
+    verify_ssl = os.getenv("PRISM_JIRA_VERIFY_SSL", "true").strip().lower() not in {"false", "0", "no"}
+
+    print_section("INPUT CHECK")
+    print(f"PRISM_JIRA_BASE_URL : {base_url or '<missing>'}")
+    print(f"PRISM_JIRA_USER     : {username or '<missing>'}")
+    print(f"PRISM_JIRA_TOKEN    : {mask(token)}")
+    print(f"PRISM_JIRA_ISSUE_KEY: {issue_key or '<not set>'}")
+    print(f"PRISM_JIRA_VERIFY_SSL: {verify_ssl}")
+
+    missing = []
+    if not base_url:
+        missing.append("PRISM_JIRA_BASE_URL")
+    if not username:
+        missing.append("PRISM_JIRA_USER")
+    if not token:
+        missing.append("PRISM_JIRA_TOKEN")
+
+    if missing:
+        print("\nMissing required environment variables: " + ", ".join(missing))
+        sys.exit(2)
+
+    base_url = normalize_base_url(base_url)
+
+    print_section("STEP 1 - BASE URL REACHABILITY")
+    root_resp = try_get(base_url, verify=verify_ssl)
+    summarize_response("Base URL", root_resp)
+
+    if root_resp is None:
+        print("\nDiagnosis: URL/network/SSL issue before auth is even attempted.")
+        sys.exit(1)
+
+    print_section("STEP 2 - AUTH TEST AGAINST /rest/api/2/myself")
+    myself_v2 = f"{base_url}/rest/api/2/myself"
+    headers = basic_auth_header(username, token)
+    r_v2 = try_get(myself_v2, headers=headers, verify=verify_ssl)
+    summarize_response("GET /rest/api/2/myself", r_v2)
+
+    print_section("STEP 3 - AUTH TEST AGAINST /rest/api/latest/myself")
+    myself_latest = f"{base_url}/rest/api/latest/myself"
+    r_latest = try_get(myself_latest, headers=headers, verify=verify_ssl)
+    summarize_response("GET /rest/api/latest/myself", r_latest)
+
+    auth_ok = False
+    working_api_base = None
+
+    for label, resp, api_base in [
+        ("api/2", r_v2, f"{base_url}/rest/api/2"),
+        ("api/latest", r_latest, f"{base_url}/rest/api/latest"),
+    ]:
+        if resp is not None and resp.status_code == 200:
+            auth_ok = True
+            working_api_base = api_base
+            print(f"\nAuth SUCCESS using {label}.")
+            try:
+                data = resp.json()
+                print("Authenticated user summary:")
+                print(json.dumps(
+                    {
+                        "name": data.get("name"),
+                        "displayName": data.get("displayName"),
+                        "emailAddress": data.get("emailAddress"),
+                        "active": data.get("active"),
+                    },
+                    indent=2
+                ))
+            except Exception:
+                pass
+            break
+
+    if not auth_ok:
+        print_section("DIAGNOSIS")
+        v2_code = None if r_v2 is None else r_v2.status_code
+        latest_code = None if r_latest is None else r_latest.status_code
+
+        if v2_code == 401 or latest_code == 401:
+            print("Authentication failed.")
+            print("Most likely causes:")
+            print("- PRISM_JIRA_USER is wrong")
+            print("- PRISM_JIRA_TOKEN is wrong")
+            print("- Jira is not accepting this auth method for this instance")
+            print("- Account is locked / API access is restricted")
+        elif v2_code == 404 and latest_code == 404:
+            print("The Jira REST API path may be wrong, or this is not the expected Jira base URL.")
+        elif v2_code == 403 or latest_code == 403:
+            print("Credentials may be valid, but the account is forbidden from using the API.")
+        else:
+            print("Could not authenticate. Review response previews above.")
+        sys.exit(1)
+
+    if issue_key:
+        print_section(f"STEP 4 - ISSUE ACCESS TEST FOR {issue_key}")
+        issue_url = f"{working_api_base}/issue/{issue_key}"
+        issue_resp = try_get(issue_url, headers=headers, verify=verify_ssl)
+        summarize_response(f"GET /issue/{issue_key}", issue_resp)
+
+        if issue_resp is not None:
+            if issue_resp.status_code == 200:
+                print("Issue access OK.")
+            elif issue_resp.status_code == 404:
+                print("Issue not found, or this account cannot see it.")
+            elif issue_resp.status_code == 403:
+                print("Authenticated, but forbidden from accessing this issue.")
+            elif issue_resp.status_code == 401:
+                print("Unexpected 401 here: auth is still not being accepted consistently.")
+
+        print_section(f"STEP 5 - COMMENT PERMISSION TEST FOR {issue_key}")
+        comment_meta_url = f"{working_api_base}/issue/{issue_key}/editmeta"
+        comment_meta_resp = try_get(comment_meta_url, headers=headers, verify=verify_ssl)
+        summarize_response(f"GET /issue/{issue_key}/editmeta", comment_meta_resp)
+
+        print("\nNote: this script does NOT post a real comment.")
+        print("It verifies:")
+        print("- URL reachability")
+        print("- authentication")
+        print("- issue visibility")
+        print("- likely permission boundaries")
+
+    print_section("FINAL RESULT")
+    print("Base URL is reachable.")
+    print("Authentication works.")
+    if issue_key:
+        print("Issue-specific checks were also attempted.")
+    else:
+        print("Set PRISM_JIRA_ISSUE_KEY to also test access to a specific issue.")
+
+
+if __name__ == "__main__":
+    main()
