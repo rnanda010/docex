@@ -1,0 +1,68 @@
+import os
+import requests
+
+# ====== CONFIG ======
+BASE_URL = os.getenv("PRISM_JIRA_BASE_URL", "https://jira.nextteraenergy.com")
+USERNAME = os.getenv("PRISM_JIRA_USER")
+PASSWORD = os.getenv("PRISM_JIRA_PASSWORD")  # NOT PAT
+
+# ====== VALIDATION ======
+if not USERNAME or not PASSWORD:
+    print("ERROR: Set PRISM_JIRA_USER and PRISM_JIRA_PASSWORD first")
+    exit()
+
+session = requests.Session()
+
+print("\n=== STEP 1: AUTHENTICATING ===")
+
+auth_url = f"{BASE_URL}/rest/tsv/latest/authenticate"
+
+payload = {
+    "username": USERNAME,
+    "password": PASSWORD
+}
+
+headers = {
+    "Content-Type": "application/json"
+}
+
+try:
+    auth_response = session.post(
+        auth_url,
+        json=payload,
+        headers=headers,
+        verify=False
+    )
+
+    print("Auth Status:", auth_response.status_code)
+    print("Response Preview:", auth_response.text[:300])
+    print("Cookies:", session.cookies.get_dict())
+
+except Exception as e:
+    print("Auth Error:", e)
+    exit()
+
+# ====== STEP 2 ======
+print("\n=== STEP 2: TEST /myself ===")
+
+myself_url = f"{BASE_URL}/rest/api/2/myself"
+
+try:
+    response = session.get(
+        myself_url,
+        headers={"Accept": "application/json"},
+        verify=False
+    )
+
+    print("Myself Status:", response.status_code)
+    print("Response Preview:", response.text[:500])
+
+except Exception as e:
+    print("Myself Error:", e)
+    exit()
+
+# ====== RESULT ======
+if response.status_code == 200:
+    print("\n✅ SUCCESS: Authentication + session working")
+else:
+    print("\n❌ FAILED: Cookie auth did not work")
