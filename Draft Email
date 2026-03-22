@@ -1,34 +1,25 @@
 Hi Lee,
 
-You might already be aware, Shankar has asked us to put together a plan for DevOps admin configuration changes—i.e., updates being made directly in the org. Sharing the plan for a daily cadence, to be followed for as long as this is required, for your review.
+You may already be aware that Shankar has asked us to put together a plan for handling the DevOps admin configuration changes, meaning the updates being made directly in the org.
 
----
+Before we send anything formal to the broader group, I wanted to first share the proposed approach with you directly and get your viewpoint, approval, and any adjustments you would recommend. Since this will involve your team in execution, I want to make sure the cadence and timing align with your expectations before we communicate it more widely.
 
-### **Scope**
+At a high level, the proposed daily cadence is:
 
-Scope for the upcoming run will be the JIRA stories identified for config changes. Final defect IDs will be included in the communication.
+| Milestone              | Time (EST) | Activity                               | Owner             |
+| ---------------------- | ---------: | -------------------------------------- | ----------------- |
+| Confluence Page Ready  |    7:30 AM | Steps and defect/story list documented | Sneha             |
+| Execution in QA Org    |    8:00 AM | Execute and validate in QA             | Lee / DevOps Team |
+| QA Validation Complete |   ~9:00 AM | Confirm readiness for Production       | Team              |
+| Production Deployment  |   9:30 PM* | Execute in Production                  | Lee / DevOps Team |
 
----
+* We proposed 9:30 PM EST primarily to allow for better overlap and quicker handling in case any issue comes up, but we are fully open to your guidance if there is a better production window.
 
-### **Proposed Plan (Draft)**
+For each run, the scope would be limited to the approved JIRA stories identified for config changes, and the final defect/story IDs would be clearly called out in the daily communication.
 
-| Milestone              | Time (EST) | Activity                         | Owner             |
-| ---------------------- | ---------- | -------------------------------- | ----------------- |
-| Confluence Page Ready  | 7:30 AM    | Steps + defect list documented   | Sneha             |
-| Execution in QA Org    | 8:00 AM    | Execute and validate in QA       | Lee / DevOps Team |
-| QA Validation Complete | ~9:00 AM   | Confirm readiness for production | Team              |
-| Production Deployment  | 9:30 PM*   | Execute in Production            | Lee / DevOps Team |
+Could you please take a quick look and let me know whether this approach works from your side, or if you would like us to adjust the timing, ownership, or overall flow?
 
-*Proposing 9:30 PM to ensure better overlap for quicker issue handling, but open to your guidance here.
-
----
-
-### **Ask**
-
-* Please take a quick look and let me know if this aligns with your expectations
-* Once confirmed, I’ll send out the plan to the broader group
-
----
+Once I have your go-ahead, I will send the formal note to the broader group with Shankar looped in.
 
 Thanks,
 Ritesh
