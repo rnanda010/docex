@@ -1,0 +1,34 @@
+Hi Lee,
+
+You might already be aware, Shankar has asked us to put together a plan for DevOps admin configuration changes—i.e., updates being made directly in the org. Sharing the plan for a daily cadence, to be followed for as long as this is required, for your review.
+
+---
+
+### **Scope**
+
+Scope for the upcoming run will be the JIRA stories identified for config changes. Final defect IDs will be included in the communication.
+
+---
+
+### **Proposed Plan (Draft)**
+
+| Milestone              | Time (EST) | Activity                         | Owner             |
+| ---------------------- | ---------- | -------------------------------- | ----------------- |
+| Confluence Page Ready  | 7:30 AM    | Steps + defect list documented   | Sneha             |
+| Execution in QA Org    | 8:00 AM    | Execute and validate in QA       | Lee / DevOps Team |
+| QA Validation Complete | ~9:00 AM   | Confirm readiness for production | Team              |
+| Production Deployment  | 9:30 PM*   | Execute in Production            | Lee / DevOps Team |
+
+*Proposing 9:30 PM to ensure better overlap for quicker issue handling, but open to your guidance here.
+
+---
+
+### **Ask**
+
+* Please take a quick look and let me know if this aligns with your expectations
+* Once confirmed, I’ll send out the plan to the broader group
+
+---
+
+Thanks,
+Ritesh
