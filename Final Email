@@ -1,0 +1,32 @@
+Hi Lee,
+
+As discussed, sharing the plan for tomorrow’s DevOps admin configuration changes.
+
+Shankar and team are looped in for visibility.
+
+### Scope
+
+The scope for this run will be the approved JIRA stories identified for admin/configuration changes. The final defect/story IDs will be included in the communication and documented on the Confluence page.
+
+### Execution Plan
+
+| Milestone              | Time (EST) | Activity                                                        | Owner             |
+| ---------------------- | ---------: | --------------------------------------------------------------- | ----------------- |
+| Confluence Page Ready  |    7:30 AM | Steps to be performed in the org + defect/story list documented | Sneha             |
+| Execution in QA Org    |    8:00 AM | Execute admin/config changes in QA org                          | Lee / DevOps Team |
+| QA Validation Complete |   ~9:00 AM | Validate changes and confirm readiness for Production           | Team              |
+| Production Deployment  |   9:30 PM* | Execute approved changes in Production org                      | Lee / DevOps Team |
+
+* Production deployment is planned for 9:30 PM EST to provide better overlap and quicker turnaround in case any issue requires attention.
+
+### Working Approach
+
+* Daily scope will be limited to the approved JIRA stories identified for config changes
+* Execution will first take place in QA with clearly documented steps
+* Only validated items will proceed to Production
+* The specific defect/story IDs in scope will be included as part of the daily communication
+
+Please let us know if there are any concerns with tomorrow’s plan. Otherwise, we will proceed accordingly.
+
+Thanks,
+Ritesh
