@@ -1,85 +1,57 @@
-Hi All, 
+Hi All,
 
-Like we shared during the in the IR3/4 call today, we wanted to keep everyone abreast on the ongoing issue in hand and the next steps / action items on it. 
+As shared during today’s IR3/4 call, I’m writing to provide further updates and outline the next steps based on the detailed dependency analysis performed by Hemant (Dev Lead) and the development team.
 
-Get a dev sandbox for testing the IR3.2 PRs validation, for which JIRA ticket has been raised - DUE 03/26/2026 
+During validation of the deployment package, several interdependencies across Vlocity and Salesforce components were identified which require a structured sequencing approach to ensure successful deployment and activation.
 
-@Jain, Hemant  
+Accordingly, the deployment is being organized into a phased PR sequence to address these dependency constraints and avoid activation conflicts observed during validation.
 
-	 
+---
 
-Issue Summary 
+**Key Dependency Considerations**
 
-The deployment includes both Vlocity and Salesforce components, and a number of these components depend on one another. Because of these dependencies, deployment and activation must be split into multiple PRs and executed in the correct order. 
+* FlexCards must be activated prior to OmniScripts that reference them
+* Certain FlexCards have interdependencies requiring a defined activation order
+* FlexCards referencing LWCs require those LWCs to be present in the target org
+* FlexCards referencing OmniScripts require those OmniScripts to be pre-existing and active
+* Apex classes depend on Expression Sets and Decision Matrices being deployed beforehand
+* LWCs and Flows referencing the same LWC cannot be deployed together and must be separated
 
-Key Dependencies Identified 
+---
 
-FlexCard activation is required before OmniScript activation 
-OmniScripts that reference FlexCards can only be activated after the dependent FlexCards are activated. 
+**Revised Deployment Approach (Dependency-Aligned Sequencing)**
 
-FlexCard activation sequence must be followed 
-Some FlexCards depend on other FlexCards, so the activation order is important. 
+* **PR1 (Completed)**
+  FlexCards, Integration Procedures, DataRaptors
 
-FlexCard activation depends on LWC availability in the org 
-If a FlexCard references an LWC, that LWC must already be present in the target org before the FlexCard can be activated. 
+* **PR2**
+  Remaining FlexCards, Expression Sets, Decision Matrices
+  *(For Production, PR1 and PR2 will be consolidated)*
 
-FlexCard activation depends on OmniScript availability in the org 
-If a FlexCard references an OmniScript, the OmniScript must already exist and be active in the org. 
+* **PR3**
+  OmniScripts, Salesforce components, Apex classes, and LWCs (with controlled references), along with Flow clean-up
 
-Apex classes depend on Expression Sets and Decision Matrices 
-Apex classes that use these artifacts cannot function correctly unless the related Expression Sets and Decision Matrices are already deployed. 
+  *Post-deployment:*
+  Execute activation steps in dependency order (Integration Procedures → FlexCards → OmniScripts)
 
-LWC and Flow that references the same LWC cannot be deployed together 
-This creates deployment conflicts, so these components must be separated into different PRs. 
+* **PR4**
+  Remaining dependent components, including finalized references
 
- 
+  *Post-deployment:*
+  Complete remaining activation and validation steps
 
-Proposed Solution to Fix Current state of 3.2 PRs in TrialSB Sandbox 
+---
 
- 
+**Next Steps & Timeline**
 
-Components are split based on dependency readiness, commenting references in LWCs, FlexiPages and reducing the number of components in one single PR.  
+* Dev sandbox required for validating the above sequencing: **March 26, 2026**
+* Validation, issue resolution, and post-deployment dependency confirmation: **March 31, 2026 (EOD)**
+* Submission of all PRs: **April 1, 2026**
 
- 
+---
 
-~ 4 PRs Total, 3 Pending on TrialSB 
+Please let us know if any clarification is needed. We will proceed with sandbox validation as the immediate next step.
 
- 
-
-PR1 (Already deployed): FlexCards, Integration Procedures, DataRaptors 
-
- 
-
-PR2: Missing FlexCards, Expression Sets, Decision Matrices(For Production, PR1 and PR2 will be combined into one single PR) 
-
- 
-
-PR3: OmniScripts, Salesforce components, All Salesforce classes, LWCs with commenting references, LWC without dependencies on Omni Scripts and Flex Cards, Flows to be deleted 
-
-Post-deployment - PR3: 
-
-Perform all post-deployment steps for Integration Procedure, FlexCard, and OmniScript activation based on dependency order 
-
- 
-
-PR4: All other dependencies including components uncommented version of references 
-
-Post-deployment - PR4: 
-
-Perform remaining post-deployment steps 
-
- 
-
-Immediate Need / Required Timeline 
-
-Sandbox required to validate the above PR sequence by March 26, 2026 
-
-Validation error fixes and identification of post-deployment dependency steps by March 31st, 2026 (EOD) 
-
-All PRs submission by April 1, 2026 
-
- 
-
- 
-
- 
+Best regards,
+Ritesh
+DevOps Lead
