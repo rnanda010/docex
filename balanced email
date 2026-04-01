@@ -1,0 +1,39 @@
+Hi Annabel, Lee, and team,
+
+Following the discussion on this morning’s leadership call, we connected offline to walk through the items raised and align on what transpired.
+
+* All PRs required for the release were submitted yesterday, with feedback addressed during the day and approvals completed within the same window (including PR 24150 after updates). 
+
+* During submission, dependencies between the primary PRs (e.g., PR 24124 dependent on PR 24152) were also called out, which required sequencing rather than standard bundling.
+
+* An additional PR, originating from a production change, came into the picture outside the initially tracked set. While this was communicated, it was not part of a consolidated release view across all teams, which created some ambiguity on overall scope.
+
+Given the above, the points raised this morning were largely around visibility of the complete PR set and alignment on dependency handling and packaging.
+
+I’ve captured a detailed, fact-based summary in the attached document, including screenshots of the relevant chats showing when PRs were submitted, discussed, and approved.
+
+Keeping this focused on facts and context, with the intent of alignment rather than getting into a detailed “who said what.”
+
+Please let me know if any additional details would be helpful.
+
+Thanks,
+Ritesh
+
+
+
+Summary
+
+Release PR Timeline & Communication Summary
+FPL DevOps was informed of all relevant PRs for the release, with clear timestamps:
+PR 24150 – 11:26 AM EST
+PR 24152 – 11:26 AM EST
+PR 24124 – 2:40 PM EST
+PR 24025 – March 26, 11:27 AM EST
+Annabel had visibility on the primary PRs planned for deployment and shared status updates accordingly.
+PR 24150 was temporarily put on hold due to a minor review comment (“Last modified by”).
+The code was updated during onshore hours to address this.
+The PR was resubmitted and approved at 7:25 PM EST the same day.
+Lee and the FPL DevOps team were explicitly informed of these updates to ensure clarity and alignment.
+Key Takeaway
+PR submissions, updates, and approvals were completed within the same day with continuous communication and visibility to the FPL DevOps team.
+The release-related activities were tracked, communicated, and acknowledged across teams.
