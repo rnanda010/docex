@@ -1,28 +1,19 @@
+
+Clarification on PR Scope and Hypercare Release Alignment
 Hi All,
 
-Following the discussion on this morning’s leadership call, we connected in another call with devops to walk through the items raised and align on what transpired.
+Following today’s leadership call, sharing a quick clarification on the confusion that was called out.
 
-As Lee pointed, we jumped onto help as it was brought up, upon looking further there was another PR for PwC.
-3.1 PR, up on further investigation, I don't have 
+For the hypercare release, PwC submitted 4 PRs, all within the expected window, with clear dependencies, sequencing, and associated stories/JIRA items. These were discussed and acknowledged on the release channel.
+The confusion stemmed from additional PRs from other workstreams that were also part of the same release window but were not part of the PwC submission and were not visible to our team. This created ambiguity on overall scope and sequencing.
+As a result, the DevOps team held on execution pending clarity on the complete PR set.
 
-As Lee mentioned PwC team-  had 
+For hypercare releases, PR scope can extend beyond what PwC intermittently manages, which contributed to the gap in visibility in this instance.
 
-Just wanted to give an update, the three PR
-
-Apparently there was another PR3.1 non-related, Lee's production related windows  
-
-All PRs required for the release were submitted yesterday, with feedback addressed during the day and approvals completed within the same window (including PR 24150 after updates).
-
-During submission, dependencies between the primary PRs (e.g., PR 24124 dependent on PR 24152) were also called out, which required sequencing rather than standard bundling.
-
-An additional PR, originating from a production change, came into the picture outside the initially tracked set. While this was communicated, it was not part of a consolidated release view across all teams, which created some ambiguity on overall scope.
-FMOS / HBES PR 
-
-Given the above, the points raised this morning were largely around visibility of the complete PR set and alignment on dependency handling and packaging.
-
-We’ve captured a detailed, fact-based summary in the attached document, including screenshots of the relevant chats showing when PRs were submitted, discussed, and approved. Keeping this focused on facts and context, with the intent of alignment rather than getting into a detailed “who said what.”
-
-Please let me know if any additional details would be helpful.
+In summary:
+* 4 PwC PRs were submitted with clear dependencies and scope
+* Additional PRs outside our team’s visibility led to confusion on release packaging
+* DevOps held execution pending clarity on the complete PR set
 
 Thanks,
 Ritesh
